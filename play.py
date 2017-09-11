@@ -25,17 +25,23 @@ def play_url(in_url):
     fp = webdriver.FirefoxProfile()
     fp.set_preference('media.volume_scale', '0.0')
     fp.set_preference("network.proxy.type", 1)
+    fp.set_preference("network.proxy.ssl", proxy_host)
+    fp.set_preference("network.proxy.ssl_port", proxy_port)
     fp.set_preference("network.proxy.http", proxy_host)
     fp.set_preference("network.proxy.http_port", proxy_port)
-    driver = webdriver.Firefox(
-        executable_path=path.join(path.dirname(path.abspath(__file__)), 'geckodriver'),
-        firefox_profile=fp
-    )
-    for app_name, app in APPS:
-        if app.URL_PATTERN in in_url:
-            app.play(in_url, driver)
-            logging.info('Played on {}'.format(app_name))
-    driver.quit()
+    try:
+        driver = webdriver.Firefox(
+            executable_path=path.join(path.dirname(path.abspath(__file__)), 'geckodriver'),
+            firefox_profile=fp
+        )
+        for app_name, app in APPS:
+            if app.URL_PATTERN in in_url:
+                app.play(in_url, driver)
+                logging.info('Played on {}'.format(app_name))
+    except Exception as e:
+        logging.error('Exception using proxy {}:{}'.format(proxy_host, proxy_port))
+    finally:
+        driver.quit()
     
 
 
