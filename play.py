@@ -3,6 +3,7 @@ from os import path
 import logging
 import argparse
 from inspect import ismodule, getmembers
+import pandas as pd
 
 import time
 from selenium import webdriver
@@ -15,11 +16,17 @@ logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
 DISPLAY = Display(visible=1, size=(800, 600))
-
+PROXIES_TABLE = pd.read_csv('proxy_list.csv', delimiter=';')
 
 def play_url(in_url):
+    proxy = PROXIES_TABLE.sample(1)
+    proxy_host = proxy.sample(1).iloc[0]['host']
+    proxy_port = proxy.sample(1).iloc[0]['port']
     fp = webdriver.FirefoxProfile()
     fp.set_preference('media.volume_scale', '0.0')
+    fp.set_preference("network.proxy.type", 1)
+    fp.set_preference("network.proxy.http", proxy_host)
+    fp.set_preference("network.proxy.http_port", proxy_port)
     driver = webdriver.Firefox(
         executable_path=path.join(path.dirname(path.abspath(__file__)), 'geckodriver'),
         firefox_profile=fp
