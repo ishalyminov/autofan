@@ -14,5 +14,5 @@ def play(in_url, in_driver):
         .find_element_by_css_selector('.btn.btn-primary.beat-player-btn')\
         .click()
     # assuming it's enough time for a play to be registered
-    sleep_period = int(random.uniform(40, 60))
+    sleep_period = int(random.uniform(60, 100))
     time.sleep(sleep_period)

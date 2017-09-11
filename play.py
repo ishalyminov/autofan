@@ -14,28 +14,33 @@ import apps
 logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
-DISPLAY = Display(visible=0, size=(800, 600))
-DISPLAY.start()
+DISPLAY = Display(visible=1, size=(800, 600))
 
 
 def play_url(in_url):
-    chrome_options = Options()
-    chrome_options.add_argument('--mute-audio')
+    fp = webdriver.FirefoxProfile()
+    fp.set_preference('media.volume_scale', '0.0')
     driver = webdriver.Firefox(
-        executable_path=path.join(path.dirname(path.abspath(__file__)), 'geckodriver')
+        executable_path=path.join(path.dirname(path.abspath(__file__)), 'geckodriver'),
+        firefox_profile=fp
     )
     for app_name, app in APPS:
         if app.URL_PATTERN in in_url:
             app.play(in_url, driver)
             logging.info('Played on {}'.format(app_name))
+    driver.quit()
+    
 
 
 def play_plan(in_url, in_plays_number):
+    global DISPLAY
+    DISPLAY.start()
     for turn in xrange(in_plays_number):
         logging.info('{}/{}'.format(turn, in_plays_number))
         play_url(in_url)
         sleep_period = int(random.uniform(5, 15))
         time.sleep(sleep_period)
+    DISPLAY.stop()
 
 
 def build_argument_parser():
