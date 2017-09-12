@@ -15,7 +15,7 @@ import apps
 logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
-DISPLAY = Display(visible=1, size=(800, 600))
+DISPLAY = Display(visible=1, size=(1280, 720))
 PROXIES_TABLE = pd.read_csv('proxy_list.csv', delimiter=';')
 
 def play_url(in_url):
