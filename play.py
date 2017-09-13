@@ -6,21 +6,22 @@ from inspect import ismodule, getmembers
 
 import time
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 from pyvirtualdisplay import Display
 
 import apps
+from proxy import get_proxy
 
 logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
-DISPLAY = Display(visible=0, size=(800, 600))
+DISPLAY = Display(visible=1, size=(800, 600))
 
 with open('proxy_list.txt') as proxy_in:
     PROXIES_LIST = [line.strip().split(':') for line in proxy_in.readlines()]
 
+
 def play_url(in_url):
-    proxy_host, proxy_port = random.choice(PROXIES_LIST)
+    proxy_host, proxy_port = get_proxy()
     fp = webdriver.FirefoxProfile()
     fp.set_preference('media.volume_scale', '0.0')
     fp.set_preference("network.proxy.type", 1)
@@ -34,7 +35,6 @@ def play_url(in_url):
             executable_path=path.join(path.dirname(path.abspath(__file__)), 'geckodriver'),
             firefox_profile=fp
         )
-        import pdb; pdb.set_trace()
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
                 app.play(in_url, driver)
@@ -44,7 +44,6 @@ def play_url(in_url):
     finally:
         if driver is not None:
             driver.quit()
-    
 
 
 def play_plan(in_url, in_plays_number):
