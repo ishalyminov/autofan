@@ -3,6 +3,7 @@ from os import path
 import logging
 import argparse
 from inspect import ismodule, getmembers
+import signal
 
 import time
 from selenium import webdriver
@@ -26,7 +27,10 @@ def play_url(in_url):
         driver = webdriver.PhantomJS(
             executable_path=path.join(path.dirname(__file__),
                                       'node_modules/.bin/phantomjs'),
-            service_args=service_args
+            service_args=service_args,
+            desired_capabilities={
+                'phantomjs.page.settings.resourceTimeout': '30000'
+            }  # 30 seconds to load the page
         )
         driver.set_window_size(1280, 720)
         for app_name, app in APPS:
@@ -37,6 +41,8 @@ def play_url(in_url):
         logging.error('Exception using proxy {}:{}'.format(proxy_host, proxy_port))
     finally:
         if driver is not None:
+            # kill the specific phantomjs child proc
+            driver.service.process.send_signal(signal.SIGTERM)
             driver.quit()
 
 
