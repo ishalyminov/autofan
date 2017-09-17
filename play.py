@@ -4,7 +4,7 @@ import logging
 import argparse
 from inspect import ismodule, getmembers
 import signal
-
+from collections import deque
 import time
 from selenium import webdriver
 
@@ -18,20 +18,20 @@ APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
 
 def play_url(in_url):
     proxy_host, proxy_port = get_proxy()
+    logging.info('got proxy server: {}:{}'.format(proxy_host, proxy_port))
     service_args = [
         '--proxy={}:{}'.format(proxy_host, proxy_port),
         '--proxy-type=https',
+        '--cookies-file=cookies.txt'
     ]
     try:
         driver = None
         driver = webdriver.PhantomJS(
             executable_path=path.join(path.dirname(__file__),
                                       'node_modules/.bin/phantomjs'),
-            service_args=service_args,
-            desired_capabilities={
-                'phantomjs.page.settings.resourceTimeout': '30000'
-            }  # 30 seconds to load the page
+            service_args=service_args
         )
+        driver.set_page_load_timeout(30)
         driver.set_window_size(1280, 720)
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
