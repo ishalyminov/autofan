@@ -15,10 +15,18 @@ logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
 
+with open('proxy_list.txt') as proxy_in:
+    PROXIES = set([tuple(line.strip().split(':')) for line in proxy_in.readlines()])
+
 
 def play_url(in_url):
-    proxy_host, proxy_port = get_proxy()
-    logging.info('got proxy server: {}:{}'.format(proxy_host, proxy_port))
+    try:
+        proxy_host, proxy_port = get_proxy()
+        PROXIES.add((proxy_host, proxy_port))
+    except:
+        logging.error('Failed to get proxy')
+    proxy_host, proxy_port = random.choice(list(PROXIES))
+    logging.info('using proxy: {}:{}'.format(proxy_host, proxy_port))
     service_args = [
         '--proxy={}:{}'.format(proxy_host, proxy_port),
         '--proxy-type=https',
