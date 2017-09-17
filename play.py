@@ -31,7 +31,7 @@ def play_url(in_url):
                                       'node_modules/.bin/phantomjs'),
             service_args=service_args
         )
-        driver.set_page_load_timeout(30)
+        driver.set_page_load_timeout(60)
         driver.set_window_size(1280, 720)
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
