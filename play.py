@@ -1,5 +1,5 @@
 import random
-from os import path
+from os import path, environ
 import logging
 import argparse
 from inspect import ismodule, getmembers
@@ -15,8 +15,7 @@ logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
 
-with open('proxy_list.txt') as proxy_in:
-    PROXIES = set([tuple(line.strip().split(':')) for line in proxy_in.readlines()])
+PROXIES = set([item.split(':') for item in os.environ('PROXIES').split(',')])
 
 
 def play_url(in_url):
