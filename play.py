@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
 
-PROXIES = set([item.split(':') for item in environ['PROXIES'].split(',')])
+PROXIES = set([tuple(item.split(':')) for item in environ['PROXIES'].split(',')])
 
 
 def play_url(in_url):
