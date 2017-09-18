@@ -34,8 +34,8 @@ def play_url(in_url):
     try:
         driver = None
         driver = webdriver.PhantomJS(
-            executable_path=path.join(path.dirname(__file__),
-                                      'node_modules/.bin/phantomjs'),
+            #  executable_path=path.join(path.dirname(__file__),
+            #                            'node_modules/.bin/phantomjs'),
             service_args=service_args
         )
         driver.set_page_load_timeout(60)
