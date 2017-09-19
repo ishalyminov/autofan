@@ -19,6 +19,7 @@ PROXIES = set([tuple(item.split(':')) for item in environ['PROXIES'].split(',')]
 
 
 def play_url(in_url):
+    global PROXIES
     try:
         proxy_host, proxy_port = get_proxy()
         PROXIES.add((proxy_host, proxy_port))
@@ -46,6 +47,7 @@ def play_url(in_url):
                 logging.info('Played on {}'.format(app_name))
     except Exception as e:
         logging.error('Exception using proxy {}:{}'.format(proxy_host, proxy_port))
+        PROXIES.remove((proxy_host, proxy_port))
     finally:
         if driver is not None:
             # kill the specific phantomjs child proc
