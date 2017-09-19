@@ -2,7 +2,7 @@ import requests
 import json
 from retrying import retry
 
-PROXY_API_URL = 'https://api.getproxylist.com/proxy' ?anonymity[]=high%20anonymity&anonymity[]=anonymous&allowsHttps=true 
+PROXY_API_URL = 'https://api.getproxylist.com/proxy'
 
 
 @retry(wait_random_min=1000, wait_random_max=2000, stop_max_attempt_number=3)
