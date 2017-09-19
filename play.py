@@ -25,7 +25,7 @@ def play_url(in_url):
         PROXIES.add((proxy_host, proxy_port))
     except:
         logging.error('Failed to get proxy')
-    proxy_host, proxy_port = random.choice(list(PROXIES))
+        proxy_host, proxy_port = random.choice(list(PROXIES))
     logging.info('using proxy: {}:{}'.format(proxy_host, proxy_port))
     service_args = [
         '--proxy={}:{}'.format(proxy_host, proxy_port),
