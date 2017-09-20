@@ -38,6 +38,6 @@ def call_proxy_api(in_proxy_config):
     content = json.loads(api_response.content)
     return (
         content[in_proxy_config['response_fields']['ip']],
-        content[in_proxy_config['response_fields']['ip']]
+        content[in_proxy_config['response_fields']['port']]
     )
 
