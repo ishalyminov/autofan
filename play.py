@@ -46,6 +46,7 @@ def play_url(in_url):
     except Exception as e:
         logging.error('Exception using proxy {}:{}'.format(proxy_host, proxy_port))
         PROXIES.remove((proxy_host, proxy_port))
+        raise
     finally:
         if driver is not None:
             # kill the specific phantomjs child proc
