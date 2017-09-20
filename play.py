@@ -1,21 +1,19 @@
 import random
-from os import path, environ
 import logging
 import argparse
 from inspect import ismodule, getmembers
 import signal
-from collections import deque
 import time
 from selenium import webdriver
 
 import apps
-from proxy import get_proxy
+from proxy import get_proxy, get_seed_proxies
 
 logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
 
-PROXIES = set([tuple(item.split(':')) for item in environ['PROXIES'].split(',')])
+PROXIES = get_seed_proxies()
 
 
 def play_url(in_url):

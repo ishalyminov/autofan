@@ -1,0 +1,41 @@
+{
+  "proxy_config": {
+    "getproxylist": {
+      "api_url": "https://api.getproxylist.com/proxy",
+      "params": {
+        "protocol[]": "http",
+        "allowsHttps": "true",
+        "anonymity[]": "high anonymity",
+        "anonymity[]": "anonymous"
+      },
+      "response_fields": {
+        "ip": "ip",
+        "port": "port"
+      }
+    },
+    "gimmeproxy": {
+      "api_url": "https://gimmeproxy.com/api/getProxy",
+      "params": {
+        "supportsHttps": "true",
+        "anonymityLevel": 1,
+        "protocol": "http"
+      },
+      "response_fields": {
+        "ip": "ip",
+        "port": "port"
+      }
+    },
+    "proxicity": {
+      "api_url": "https://api.proxicity.io/v2/proxy",
+      "params": {
+        "protocol": "http",
+        "httpsSupport": "true",
+        "isAnonymous": "true"
+      },
+      "response_fields": {
+        "ip": "ipAddress",
+        "port": "port"
+      }
+    }
+  }
+}
