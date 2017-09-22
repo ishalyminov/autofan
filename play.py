@@ -5,6 +5,7 @@ from inspect import ismodule, getmembers
 import signal
 import time
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 import apps
 from proxy import get_proxy, get_seed_proxies
@@ -25,20 +26,10 @@ def play_url(in_url):
         logging.error('Failed to get proxy')
         proxy_host, proxy_port = random.choice(list(PROXIES))
     logging.info('using proxy: {}:{}'.format(proxy_host, proxy_port))
-    service_args = [
-        '--proxy={}:{}'.format(proxy_host, proxy_port),
-        '--proxy-type=https',
-        '--cookies-file=cookies.txt'
-    ]
+
     try:
         driver = None
-        driver = webdriver.PhantomJS(
-            #  executable_path=path.join(path.dirname(__file__),
-            #                            'node_modules/.bin/phantomjs'),
-            service_args=service_args
-        )
-        driver.set_page_load_timeout(60)
-        driver.set_window_size(1280, 720)
+        driver = webdriver.Chrome()
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
                 app.play(in_url, driver)
@@ -49,8 +40,6 @@ def play_url(in_url):
         raise
     finally:
         if driver is not None:
-            # kill the specific phantomjs child proc
-            driver.service.process.send_signal(signal.SIGTERM)
             driver.quit()
 
 
