@@ -4,6 +4,7 @@ import argparse
 from inspect import ismodule, getmembers
 import time
 
+import os
 from selenium import webdriver
 from pyvirtualdisplay import Display
 
@@ -29,7 +30,10 @@ def play_url(in_url):
 
     try:
         driver = None
-        driver = webdriver.Chrome()
+        driver = \
+            webdriver.Chrome(os.environ['CHROME_BINARY']) \
+            if 'CHROME_BINARY' in os.environ \
+            else webdriver.Chrome()
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
                 app.play(in_url, driver)
