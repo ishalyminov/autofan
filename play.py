@@ -6,7 +6,6 @@ import time
 
 import os
 from selenium import webdriver
-from pyvirtualdisplay import Display
 
 import apps
 from proxy import get_proxy, get_seed_proxies
@@ -14,7 +13,6 @@ from proxy import get_proxy, get_seed_proxies
 logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
-DISPLAY = Display(visible=0, size=(1280, 720))
 PROXIES = get_seed_proxies()
 
 
@@ -30,10 +28,15 @@ def play_url(in_url):
 
     try:
         driver = None
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument(
+            '--proxy-server={}:{}'.format(proxy_host, proxy_port)
+        )
+        chrome_options.add_argument('--headless')
         driver = \
-            webdriver.Chrome(os.environ['CHROME_BINARY']) \
+            webdriver.Chrome(os.environ['CHROME_BINARY'], chrome_options=chrome_options) \
             if 'CHROME_BINARY' in os.environ \
-            else webdriver.Chrome()
+            else webdriver.Chrome(chrome_options=chrome_options)
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
                 app.play(in_url, driver)
@@ -48,17 +51,11 @@ def play_url(in_url):
 
 
 def play_plan(in_url, in_plays_number):
-    try:
-        DISPLAY.start()
-        for turn in xrange(in_plays_number):
-            logging.info('{}/{}'.format(turn, in_plays_number))
-            play_url(in_url)
-            sleep_period = int(random.uniform(5, 15))
-            time.sleep(sleep_period)
-    except Exception as e:
-        raise
-    finally:
-        DISPLAY.stop()
+    for turn in xrange(in_plays_number):
+        logging.info('{}/{}'.format(turn, in_plays_number))
+        play_url(in_url)
+        sleep_period = int(random.uniform(5, 15))
+        time.sleep(sleep_period)
 
 
 def build_argument_parser():
