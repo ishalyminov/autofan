@@ -2,10 +2,10 @@ import random
 import logging
 import argparse
 from inspect import ismodule, getmembers
-import signal
 import time
+
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from pyvirtualdisplay import Display
 
 import apps
 from proxy import get_proxy, get_seed_proxies
@@ -13,7 +13,7 @@ from proxy import get_proxy, get_seed_proxies
 logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
-
+DISPLAY = Display(visible=0, size=(1280, 720))
 PROXIES = get_seed_proxies()
 
 
@@ -44,11 +44,17 @@ def play_url(in_url):
 
 
 def play_plan(in_url, in_plays_number):
-    for turn in xrange(in_plays_number):
-        logging.info('{}/{}'.format(turn, in_plays_number))
-        play_url(in_url)
-        sleep_period = int(random.uniform(5, 15))
-        time.sleep(sleep_period)
+    try:
+        DISPLAY.start()
+        for turn in xrange(in_plays_number):
+            logging.info('{}/{}'.format(turn, in_plays_number))
+            play_url(in_url)
+            sleep_period = int(random.uniform(5, 15))
+            time.sleep(sleep_period)
+    except Exception as e:
+        raise
+    finally:
+        DISPLAY.stop()
 
 
 def build_argument_parser():
