@@ -34,8 +34,8 @@ def play_url(in_url):
         )
         chrome_options.add_argument('--headless')
         driver = \
-            webdriver.Chrome(os.environ['CHROME_BINARY'], chrome_options=chrome_options) \
-            if 'CHROME_BINARY' in os.environ \
+            webdriver.Chrome(os.environ['GOOGLE_CHROME_SHIM'], chrome_options=chrome_options) \
+            if 'GOOGLE_CHROME_SHIM' in os.environ \
             else webdriver.Chrome(chrome_options=chrome_options)
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
