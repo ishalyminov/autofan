@@ -28,15 +28,13 @@ def play_url(in_url):
 
     try:
         driver = None
-        #chrome_options = webdriver.ChromeOptions()
-        #chrome_options.add_argument(
-        #    '--proxy-server={}:{}'.format(proxy_host, proxy_port)
-        #)
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument(
+            '--proxy-server={}:{}'.format(proxy_host, proxy_port)
+        )
         chrome_options.add_argument('--headless')
-        driver = \
-            webdriver.Chrome(executable_path=os.environ['GOOGLE_CHROME_SHIM'])\ #, chrome_options=chrome_options) \
-            if 'GOOGLE_CHROME_SHIM' in os.environ \
-            else webdriver.Chrome() #chrome_options=chrome_options)
+        chrome_options.binary_location = '/app/.apt/usr/bin/google-chrome'
+        driver = webdriver.Chrome(chrome_options=chrome_options)
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
                 app.play(in_url, driver)
