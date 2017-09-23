@@ -13,13 +13,13 @@ from proxy import get_proxy, get_seed_proxies
 logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
-PROXIES = get_seed_proxies()
+# PROXIES = get_seed_proxies()
 
 
 def play_url(in_url):
     global PROXIES
     try:
-        proxy_host, proxy_port = get_proxy()
+        proxy_host, proxy_port = None, None #get_proxy()
         PROXIES.add((proxy_host, proxy_port))
     except:
         logging.error('Failed to get proxy')
@@ -28,15 +28,15 @@ def play_url(in_url):
 
     try:
         driver = None
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument(
-            '--proxy-server={}:{}'.format(proxy_host, proxy_port)
-        )
+        #chrome_options = webdriver.ChromeOptions()
+        #chrome_options.add_argument(
+        #    '--proxy-server={}:{}'.format(proxy_host, proxy_port)
+        #)
         chrome_options.add_argument('--headless')
         driver = \
-            webdriver.Chrome(os.environ['GOOGLE_CHROME_SHIM'], chrome_options=chrome_options) \
+            webdriver.Chrome(executable_path=os.environ['GOOGLE_CHROME_SHIM'])\ #, chrome_options=chrome_options) \
             if 'GOOGLE_CHROME_SHIM' in os.environ \
-            else webdriver.Chrome(chrome_options=chrome_options)
+            else webdriver.Chrome() #chrome_options=chrome_options)
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
                 app.play(in_url, driver)
