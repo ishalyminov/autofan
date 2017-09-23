@@ -13,13 +13,13 @@ from proxy import get_proxy, get_seed_proxies
 logging.basicConfig(level=logging.INFO)
 
 APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
-# PROXIES = get_seed_proxies()
+PROXIES = get_seed_proxies()
 
 
 def play_url(in_url):
     global PROXIES
     try:
-        proxy_host, proxy_port = None, None #get_proxy()
+        proxy_host, proxy_port = get_proxy()
         PROXIES.add((proxy_host, proxy_port))
     except:
         logging.error('Failed to get proxy')
