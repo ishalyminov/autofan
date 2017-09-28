@@ -1,1 +1,1 @@
-worker: python play.py --url "https://beatster.com/beat/pure-virtual-Lucha-Libre" -n 1000
+worker: python bot.py --playlist playlist.txt
