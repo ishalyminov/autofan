@@ -1,25 +1,16 @@
-import argparse
 import random
+
+import os
 
 from play import play_url
 
 
-def build_argument_parser():
-    result = argparse.ArgumentParser()
-    result.add_argument('--playlist', required=True)
-    return result
-
-
-def main(in_playlist_file):
-    with open(in_playlist_file) as playlist_in:
-        playlist = map(lambda x: x.strip(), playlist_in)
+def main(in_playlist):
     while True:
-        url = random.choice(playlist)
+        url = random.choice(in_playlist)
         play_url(playlist)
 
 
 if __name__ == '__main__':
-    parser = build_argument_parser()
-    args = parser.parse_args()
-
-    main(args.playlist)
+    playlist = os.environ['PLAYLIST'].split('\n')
+    main(playlist)
