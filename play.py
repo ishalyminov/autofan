@@ -40,7 +40,7 @@ def play_url(in_url):
         chrome_options.add_argument('--headless')
         chrome_options.binary_location = '/app/.apt/usr/bin/google-chrome'
         driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(120)
         for app_name, app in APPS:
             if app.URL_PATTERN in in_url:
                 app.play(in_url, driver)
