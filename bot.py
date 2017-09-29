@@ -8,7 +8,10 @@ from play import play_url
 def main(in_playlist):
     while True:
         url = random.choice(in_playlist)
-        play_url(url)
+        try:
+            play_url(url)
+        except:
+            print 'crashed on url: {}'.format(url)
 
 
 if __name__ == '__main__':

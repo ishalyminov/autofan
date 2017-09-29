@@ -1,1 +1,1 @@
-worker: python bot.py --playlist playlist.txt
+worker: python bot.py
