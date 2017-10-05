@@ -1,6 +1,7 @@
 import random
 import logging
 import argparse
+import traceback
 from inspect import ismodule, getmembers
 import time
 
@@ -15,30 +16,34 @@ APPS = filter(lambda member: ismodule(member[1]), getmembers(apps))
 PROXIES = []
 
 
-def play_url(in_url):
+def play_url(in_url, demo=False):
     global PROXIES
-    try:
-        if not len(PROXIES):
-            PROXIES = get_seed_proxies()
-    except:
-        logging.error('Failed to get seed proxies')
-        return
-    try:
-        proxy_host, proxy_port = get_proxy()
-        PROXIES.add((proxy_host, proxy_port))
-    except:
-        logging.error('Failed to get proxy')
-        proxy_host, proxy_port = random.choice(list(PROXIES))
-    logging.info('using proxy: {}:{}'.format(proxy_host, proxy_port))
+    if not demo:
+        try:
+            if not len(PROXIES):
+                PROXIES = get_seed_proxies()
+        except Exception as e:
+            logging.error('Failed to get seed proxies')
+            return
+        try:
+            proxy_host, proxy_port = get_proxy()
+            PROXIES.add((proxy_host, proxy_port))
+        except Exception as e:
+            logging.error('Failed to get proxy')
+            proxy_host, proxy_port = random.choice(list(PROXIES))
+        logging.info('using proxy: {}:{}'.format(proxy_host, proxy_port))
 
     try:
         driver = None
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument(
-            '--proxy-server={}:{}'.format(proxy_host, proxy_port)
-        )
-        chrome_options.add_argument('--headless')
-        chrome_options.binary_location = '/app/.apt/usr/bin/google-chrome'
+        if not demo:
+            chrome_options.add_argument(
+                '--proxy-server={}:{}'.format(proxy_host, proxy_port)
+            )
+            chrome_options.add_argument('--headless')
+        chrome_options.binary_location = '/usr/bin/google-chrome' \
+            if demo \
+            else '/app/.apt/usr/bin/google-chrome'
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.set_page_load_timeout(120)
         for app_name, app in APPS:
@@ -46,8 +51,9 @@ def play_url(in_url):
                 app.play(in_url, driver)
                 logging.info('Played on {}: "{}"'.format(app_name, in_url))
     except Exception as e:
-        logging.error('Exception using proxy {}:{}'.format(proxy_host, proxy_port))
-        PROXIES.remove((proxy_host, proxy_port))
+        if not demo:
+            logging.error('Exception using proxy {}:{}'.format(proxy_host, proxy_port))
+            PROXIES.remove((proxy_host, proxy_port))
         raise
     finally:
         if driver is not None:
